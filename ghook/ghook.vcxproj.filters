@@ -16,18 +16,6 @@
     <Filter Include="源文件\ghook">
       <UniqueIdentifier>{36ef411c-fdb9-4c2c-97be-8dd8f7f944ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\proxyfunction">
-      <UniqueIdentifier>{44f39c21-6af0-45c9-8a77-73d686f28637}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\proxyfunction\Net">
-      <UniqueIdentifier>{d455d10e-a659-466f-8488-ed0f6e6f0e74}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\proxyfunction\File">
-      <UniqueIdentifier>{7bab8b49-516a-4bea-be8e-ca6c30dabe10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\proxyfunction\Memory">
-      <UniqueIdentifier>{9343f2c1-d8de-4192-a75f-1768a4e8ed30}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -42,14 +30,8 @@
     <ClInclude Include="MinHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="InternetConnectW.h">
-      <Filter>源文件\proxyfunction\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="NtCreateFile.h">
-      <Filter>源文件\proxyfunction\File</Filter>
-    </ClInclude>
-    <ClInclude Include="NtWriteFile.h">
-      <Filter>源文件\proxyfunction\File</Filter>
+    <ClInclude Include="hook_handler.h">
+      <Filter>源文件\ghook</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,5 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="hook_handler.asm">
+      <Filter>源文件\ghook</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
