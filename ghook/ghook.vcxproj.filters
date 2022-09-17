@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\ghook">
+      <UniqueIdentifier>{36ef411c-fdb9-4c2c-97be-8dd8f7f944ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\proxyfunction">
+      <UniqueIdentifier>{44f39c21-6af0-45c9-8a77-73d686f28637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\proxyfunction\Net">
+      <UniqueIdentifier>{d455d10e-a659-466f-8488-ed0f6e6f0e74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\proxyfunction\File">
+      <UniqueIdentifier>{7bab8b49-516a-4bea-be8e-ca6c30dabe10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\proxyfunction\Memory">
+      <UniqueIdentifier>{9343f2c1-d8de-4192-a75f-1768a4e8ed30}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ghook.h">
+      <Filter>源文件\ghook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InternetConnectW.h">
+      <Filter>源文件\proxyfunction\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="NtCreateFile.h">
+      <Filter>源文件\proxyfunction\File</Filter>
+    </ClInclude>
+    <ClInclude Include="NtWriteFile.h">
+      <Filter>源文件\proxyfunction\File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ghook.cpp">
+      <Filter>源文件\ghook</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
