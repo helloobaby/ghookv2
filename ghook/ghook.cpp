@@ -19,20 +19,6 @@ enum function_hooked_type{
 };
 
 
-#ifdef _DEBUG
-#ifdef _X86_
-#pragma comment(lib,"libMinHook.x86D.lib")
-#else
-#pragma comment(lib,"libMinHook.x64D.lib")
-#endif
-#else
-#ifdef _X64_
-#pragma comment(lib,"libMinHook.x64R.lib")
-#else
-#pragma comment(lib,"libMinHook.x86R.lib")
-#endif
-#endif
-
 static int cmpfunc(const void* a, const void* b)
 {
 	return (*(char*)a - *(char*)b);
