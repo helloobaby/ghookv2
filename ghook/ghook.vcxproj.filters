@@ -33,6 +33,9 @@
     <ClInclude Include="hook_handler.h">
       <Filter>源文件\ghook</Filter>
     </ClInclude>
+    <ClInclude Include="minictx.h">
+      <Filter>源文件\ghook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

@@ -1,5 +1,18 @@
-ghook改进版
+## new hook engine
 
 
 
-此项目的初衷是为了解决一个被hook的api需要一个代理函数的问题，有时候代理函数很简单，但是也必须实现，这样导致项目写的很麻烦，维护也很累。
+
+
+编译前提：
+
+用vcpkg安装好spdlog、minhook
+
+
+
+
+
+1.为什么将api跳转到shellcode，而不是hook_handler_asm？
+
+直接jmp到handler，无法知道被hook的是哪个函数跳进来的
+
