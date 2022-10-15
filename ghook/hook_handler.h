@@ -1,8 +1,10 @@
 #include "minictx.h"
+#include "api_handler.h"
 
 #include <iostream>
 #include <cassert>
 #include <mutex>
+
 
 extern "C" void hook_handler_asm();
 
@@ -19,11 +21,9 @@ extern "C" void hook_handler_c(minictx * context) {
 	//printf("[+]ori function pointer %p\n", context->OriFunctionPointer);
 
 	if (context->OriFunctionPointer == OriNtCreateFile) {
-		POBJECT_ATTRIBUTES r8 = (POBJECT_ATTRIBUTES)context->R8;
-		logger->info(std::format(L"[-] NtCreateFile path {}\n", r8->ObjectName->Buffer));
+		handler_NtCreateFile(context);
 	}if (context->OriFunctionPointer == OriNtAllocateVirtualMemory) {
-		size_t* r9 = (size_t*)context->R9;
-		logger->info(std::format(L"[-] NtAllocateVirtualMemory addr {:#x}\n",*r9));
+		handler_NtAllocateVirtualMemory(context);
 	}
 }
 

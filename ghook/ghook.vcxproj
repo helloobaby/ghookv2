@@ -172,6 +172,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="api_handler.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ghook.h" />
     <ClInclude Include="hook_handler.h" />
