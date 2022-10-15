@@ -6,6 +6,11 @@
 
 extern "C" void hook_handler_asm();
 
+extern std::shared_ptr<spdlog::logger> logger;
+
+extern PVOID OriNtCreateFile;
+extern PVOID OriNtAllocateVirtualMemory;
+
 // 这个函数必须多线程安全
 extern "C" void hook_handler_c(minictx * context) {
 	assert(context);
@@ -13,9 +18,12 @@ extern "C" void hook_handler_c(minictx * context) {
 	//printf("[+]hook_handler \n");
 	//printf("[+]ori function pointer %p\n", context->OriFunctionPointer);
 
-	if (context->OriFunctionPointer == NtCreateFile) {
+	if (context->OriFunctionPointer == OriNtCreateFile) {
 		POBJECT_ATTRIBUTES r8 = (POBJECT_ATTRIBUTES)context->R8;
-		//printf("%ws\n", r8->ObjectName->Buffer);			//unsafe
+		logger->info(std::format(L"[-] NtCreateFile path {}\n", r8->ObjectName->Buffer));
+	}if (context->OriFunctionPointer == OriNtAllocateVirtualMemory) {
+		size_t* r9 = (size_t*)context->R9;
+		logger->info(std::format(L"[-] NtAllocateVirtualMemory addr {:#x}\n",*r9));
 	}
 }
 

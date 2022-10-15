@@ -15,6 +15,12 @@
 extern wchar_t exepath[512];
 extern std::shared_ptr<spdlog::logger> logger;
 
+PVOID OriNtCreateFile;
+PVOID NtCreateFileShellcode;
+
+PVOID OriNtAllocateVirtualMemory;
+PVOID NtAllocateVirtualMemoryShellcode;
+
 enum function_hooked_type{
 	NtCreateFileType,
 };
@@ -115,13 +121,13 @@ void MainWork()
 		return;
 	}
 
-	PVOID OriNtCreateFile;
-	PVOID NtCreateFileShellcode = gen_shellcode();
+	OriNtCreateFile;
+	NtCreateFileShellcode = gen_shellcode();
 	r = MH_CreateHook(NtCreateFile, NtCreateFileShellcode, &OriNtCreateFile);	//执行api会直接跳转到shellcode
 	fill_shellcode_ori_function(NtCreateFileShellcode, OriNtCreateFile);
 
-	PVOID OriNtAllocateVirtualMemory;
-	PVOID NtAllocateVirtualMemoryShellcode = gen_shellcode();
+	OriNtAllocateVirtualMemory;
+	NtAllocateVirtualMemoryShellcode = gen_shellcode();
 	r = MH_CreateHook(NtAllocateVirtualMemory, NtAllocateVirtualMemoryShellcode, &OriNtAllocateVirtualMemory);
 	fill_shellcode_ori_function(NtAllocateVirtualMemoryShellcode, OriNtAllocateVirtualMemory);
 
