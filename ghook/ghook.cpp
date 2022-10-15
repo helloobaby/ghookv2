@@ -49,6 +49,7 @@ PVOID gen_shellcode() {
 	static char shellcode[] = {
 
 		// 保存环境
+		0x54,									//push rsp
 		0x41, 0x57,								//push r15				
 		0x41, 0x56,								//push r14
 		0x41, 0x55,								//push r13
@@ -90,7 +91,7 @@ PVOID gen_shellcode() {
 		0x41, 0x5D,								//pop r13
 		0x41, 0x5E,								//pop r14
 		//0x41, 0x5F,							//pop r15
-		0x48, 0x83, 0xC4, 0x8,					//add rsp,8 这里本来是pop r15的,但是r15在下面用来跳转了,不能恢复
+		0x48, 0x83, 0xC4, 0x10,					//add rsp,8 代替pop r15,pop rsp
 
 		//调用原来函数
 		0x41, 0xFF, 0xE7,						//jmp r15 只能用jmp 不能用call call会改变rsp
@@ -108,7 +109,7 @@ PVOID gen_shellcode() {
 
 void fill_shellcode_ori_function(PVOID shellcode, PVOID ori_function_pointer) {
 	// 如果shellcode改了的话,这里的偏移要改一下
-	memcpy((void*)((ULONG_PTR)shellcode + 25), &ori_function_pointer, sizeof(void*));	
+	memcpy((void*)((ULONG_PTR)shellcode + 26), &ori_function_pointer, sizeof(void*));	
 }
 
 void MainWork()

@@ -20,8 +20,9 @@ struct minictx {
     DWORD64 R13;
     DWORD64 R14;
     DWORD64 R15;
+    DWORD64 Rsp;
 };
 
-static_assert(sizeof(minictx) == 0x80);
+static_assert(sizeof(minictx) == 0x88);
 
 #endif
