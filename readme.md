@@ -2,10 +2,7 @@
 
 
 
-
-
 编译前提：
 
-用vcpkg安装好spdlog、minhook
-
+用vcpkg安装好spdlog[wchar]、minhook
 
