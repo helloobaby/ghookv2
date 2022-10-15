@@ -62,8 +62,12 @@ int main()
 
 	printf("[-] Status %x\n", Status);
 
+	PVOID AllocPtr = NULL;
+	size_t size = 0x1000;
+	Status = NtAllocateVirtualMemory(GetCurrentProcess(), &AllocPtr, NULL, &size, MEM_COMMIT, PAGE_READONLY);
 
-
+	printf("[-] alloc pointer %p\n", AllocPtr);
+	printf("[-] Status %x\n", Status);
 
 
 
