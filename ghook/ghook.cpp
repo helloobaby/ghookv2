@@ -21,11 +21,6 @@ PVOID NtCreateFileShellcode;
 PVOID OriNtAllocateVirtualMemory;
 PVOID NtAllocateVirtualMemoryShellcode;
 
-enum function_hooked_type{
-	NtCreateFileType,
-};
-
-
 static int cmpfunc(const void* a, const void* b)
 {
 	return (*(char*)a - *(char*)b);

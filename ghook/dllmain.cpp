@@ -33,7 +33,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
         logger->info(std::format(L"[ghook]dll loaded : {}",exepath));
 
-        MainWork();
+        MainWork(); //ghook.cpp
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
