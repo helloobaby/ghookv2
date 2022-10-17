@@ -146,4 +146,11 @@ void MainWork() {
     logger->info(L"hook NtCreateFile failed");
     return;
   }
+
+  Hooker NtAllocateVirtualMemoryHooker;
+  success = NtAllocateVirtualMemoryHooker.Hook(&NtAllocateVirtualMemory);
+  if (!success) {
+    logger->info(L"hook NtAllocateVirtualMemory failed");
+    return;
+  }
 }

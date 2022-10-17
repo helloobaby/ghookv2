@@ -13,8 +13,8 @@ extern std::shared_ptr<spdlog::logger> logger;
 // 这个函数必须多线程安全
 extern "C" void hook_handler_c(minictx * context) {
 
-  assert(context);
-  //logger->info(L"hook_handler_c enter");		//DEBUG
+    assert(context);
+    logger->info(L"hook_handler_c enter");		//DEBUG
 
 	if (context->HookedFunction == NtCreateFile) {
       handler_NtCreateFile(context);

@@ -39,6 +39,9 @@
     <ClInclude Include="api_handler.h">
       <Filter>源文件\ghook</Filter>
     </ClInclude>
+    <ClInclude Include="param_helper.h">
+      <Filter>源文件\ghook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

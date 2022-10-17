@@ -178,6 +178,7 @@
     <ClInclude Include="hook_handler.h" />
     <ClInclude Include="MinHook.h" />
     <ClInclude Include="minictx.h" />
+    <ClInclude Include="param_helper.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
