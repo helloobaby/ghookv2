@@ -3,6 +3,7 @@
 #include <windows.h>
 // 可能只需要保存这些寄存器(目前只支持x64)
 struct minictx {
+    PVOID HookedFunction;
     PVOID OriFunctionPointer;
     DWORD64 Rax;
     DWORD64 Rcx;
@@ -23,6 +24,5 @@ struct minictx {
     DWORD64 Rsp;
 };
 
-static_assert(sizeof(minictx) == 0x88);
 
 #endif

@@ -15,19 +15,8 @@
 extern wchar_t exepath[512];
 extern std::shared_ptr<spdlog::logger> logger;
 
-PVOID OriNtCreateFile;
-PVOID NtCreateFileShellcode;
-
-PVOID OriNtAllocateVirtualMemory;
-PVOID NtAllocateVirtualMemoryShellcode;
-
-static int cmpfunc(const void* a, const void* b)
-{
-	return (*(char*)a - *(char*)b);
-}
-
-//为被hook的api函数创建一个shellcode,跳转到我们的handler
-PVOID gen_shellcode() {
+// 为被hook的api函数创建一个shellcode,跳转到我们的handler
+PVOID Hooker::GenShellCode() {
 	static constexpr uint64_t PAGE_SIZE = 0x1000;
 
 	PVOID shellcode_base = nullptr;
@@ -36,9 +25,6 @@ PVOID gen_shellcode() {
 	if (!shellcode_base) {	//分配内存失败
 		return nullptr;
 	}
-
-	
-	//api monitor是把IAT中的指针
 
 	// shellcode需要建立minictx,保存当时的环境,然后这个环境作为参数传给hook_handler
 	static char shellcode[] = {
@@ -62,14 +48,17 @@ PVOID gen_shellcode() {
 		0x50,									//push rax
 
 		// 直接call一个地址会有4gb地址空间限制
-		0x48,0xb9,00,00,00,00,00,00,00,00,      //mov rcx,原始函数地址(利用fill_shellcode_ori_function填入)
+		0x48,0xb9,00,00,00,00,00,00,00,00,      //mov rcx,x
 		0x51,									//push rcx ,把这个函数指针放在栈上
+        0x48,0xb9, 00, 00, 00, 00, 00, 00, 00, 00, //mov rcx,x
+		0x51,									//push rcx
 		0x48, 0x89, 0xE1,						//mov rcx,rsp
 
 		// ff 15 后面4字节是相对rip的偏移(shellcode最后8个字节放这个call的地址)
-		0xff,0x15,30,00,00,00,					//call qword ptr ds:[A]跳转到hook_handler_asm函数地址
+		0xff,0x15,32,00,00,00,					//call qword ptr ds:[A]跳转到hook_handler_asm函数地址
 
 		// 恢复环境
+		0x41,0x5f,								//pop struct minictx.HookedFunction弹出
 		0x41,0x5f,								//pop r15   r15指向原函数指针(这里要污染一个r15寄存器)
 		0x58,									//pop rax
 		0x59,									//pop rcx
@@ -102,44 +91,10 @@ PVOID gen_shellcode() {
 	return shellcode_base;
 }
 
-void fill_shellcode_ori_function(PVOID shellcode, PVOID ori_function_pointer) {
+void Hooker::FillShellCode(PVOID shellcode, PVOID ori_function_pointer,PVOID hooked_function) {
 	// 如果shellcode改了的话,这里的偏移要改一下
-	memcpy((void*)((ULONG_PTR)shellcode + 26), &ori_function_pointer, sizeof(void*));	
-}
-
-void MainWork()
-{
-	auto r = MH_Initialize();
-
-	if (r != MH_OK)
-	{
-		logger->info(L"minhook init failed");
-		return;
-	}
-
-	OriNtCreateFile;
-	NtCreateFileShellcode = gen_shellcode();
-	r = MH_CreateHook(NtCreateFile, NtCreateFileShellcode, &OriNtCreateFile);	//执行api会直接跳转到shellcode
-	fill_shellcode_ori_function(NtCreateFileShellcode, OriNtCreateFile);
-
-	OriNtAllocateVirtualMemory;
-	NtAllocateVirtualMemoryShellcode = gen_shellcode();
-	r = MH_CreateHook(NtAllocateVirtualMemory, NtAllocateVirtualMemoryShellcode, &OriNtAllocateVirtualMemory);
-	fill_shellcode_ori_function(NtAllocateVirtualMemoryShellcode, OriNtAllocateVirtualMemory);
-
-	if (r != MH_OK) {
-		return;
-	}
-
-	// 使能hook
-	r = MH_EnableHook(NtCreateFile);
-	if (r != MH_OK) {
-		return;
-	}
-	r = MH_EnableHook(NtAllocateVirtualMemory);
-	if (r != MH_OK) {
-		return;
-	}
+	memcpy((void*)((ULONG_PTR)shellcode + 26), &ori_function_pointer, sizeof(void*));
+    memcpy((void*)((ULONG_PTR)shellcode + 37), &hooked_function, sizeof(void*));
 }
 
 
@@ -153,16 +108,42 @@ void OutputDebug(const WCHAR* strOutputString, ...) {
 	OutputDebugString(strBuffer);
 }
 
-//
-// 主要就是弹出一个框 指示hook成功了
-//
-void TestApiHookSuccess(const WCHAR* strOutputString) {
-	MessageBoxW(NULL, strOutputString, L"ghook", MB_OK);
-}
 
-
+// 导出一个函数 有时候有用
 void __stdcall export_thunk()
 {
 	OutputDebug(L"[ghook]export_thunk\n");
 }
 
+bool Hooker::LibraryInit() {
+  return MH_Initialize() == MH_OK;
+}
+
+bool Hooker::Hook(PVOID function_address) {
+  if (!IsLibraryInit())
+    LibraryInit();
+
+  MH_STATUS r;
+  shellcode_ = GenShellCode();
+  hooked_function_ = function_address;
+  r = MH_CreateHook(function_address, shellcode_, &ori_pointer_);
+  if (r != MH_OK)
+    return false;
+
+  // 注意不是&ori_pointer_
+  FillShellCode(shellcode_, ori_pointer_,hooked_function_);
+
+  return MH_EnableHook(function_address) == MH_OK;
+}
+
+void MainWork() {
+  bool success;
+
+  Hooker NtCreateFileHooker;
+  success = NtCreateFileHooker.Hook(&NtCreateFile);
+
+  if (!success) {
+    logger->info(L"hook NtCreateFile failed");
+    return;
+  }
+}
