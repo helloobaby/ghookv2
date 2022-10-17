@@ -16,6 +16,7 @@ extern "C" void hook_handler_c(minictx * context) {
     assert(context);
     //logger->info(L"hook_handler_c enter");		//DEBUG
 
+    // hook NtAllocateVirtualMemory »áËÀËø
     if (context->HookedFunction == &NtAllocateVirtualMemory) {
       handler_NtAllocateVirtualMemory(context);
     } else if (context->HookedFunction == &BitBlt) {
