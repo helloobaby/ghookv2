@@ -137,16 +137,13 @@ bool Hooker::Hook(PVOID function_address) {
 }
 
 void MainWork() {
-  bool success = false;
+  bool success = true;
 
-  Hooker NtAllocateVirtualMemoryHooker;
-  success = NtAllocateVirtualMemoryHooker.Hook(&::NtAllocateVirtualMemory);
+  //Hooker NtAllocateVirtualMemoryHooker;
+  //success = NtAllocateVirtualMemoryHooker.Hook(&::NtAllocateVirtualMemory);
 
   Hooker BitBltHooker;
   success &= BitBltHooker.Hook(&::BitBlt);
-
-  Hooker NtReadFileHooker;
-  success &= NtReadFileHooker.Hook(&::NtReadFile);
 
     if (!success) {
     logger->info(L"hook something failed");

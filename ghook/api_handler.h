@@ -3,14 +3,8 @@
 #include "param_helper.h"
 extern std::shared_ptr<spdlog::logger> logger;
 
+// 小心引起重入,慎用spdlog
 void handler_NtAllocateVirtualMemory(minictx* context) {
-
-  //size_t* r9 = get_4_param<size_t*>(context);
-  //DWORD AllocType = get_5_param<DWORD>(context);
-  //DWORD ProtectType = get_6_param<DWORD>(context);
-  //logger->info(std::format(L"[-] NtAllocateVirtualMemory size {:#x}\n", *r9));
-  //logger->info(std::format(L"[-] NtAllocateVirtualMemory AlloctionType {:#x}\n",AllocType));
-  //logger->info(std::format(L"[-] NtAllocateVirtualMemory ProtectType {:#x}\n",ProtectType));
 }
 
 void handler_BitBlt(minictx* context) {
