@@ -14,11 +14,13 @@ extern std::shared_ptr<spdlog::logger> logger;
 extern "C" void hook_handler_c(minictx * context) {
 
     assert(context);
-    logger->info(L"hook_handler_c enter");		//DEBUG
+    //logger->info(L"hook_handler_c enter");		//DEBUG
 
-    if (context->HookedFunction == NtAllocateVirtualMemory) {
+    if (context->HookedFunction == &NtAllocateVirtualMemory) {
       handler_NtAllocateVirtualMemory(context);
-	}
+    } else if (context->HookedFunction == &BitBlt) {
+      handler_BitBlt(context); 
+    }
 }
 
 

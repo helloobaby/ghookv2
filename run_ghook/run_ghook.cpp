@@ -70,8 +70,9 @@ int main()
 	printf("[-] Status %x\n", Status);
 
 
+	BitBlt((HDC)1, 2, 3, 4, 5, (HDC)6, 7, 8, 9);
 
-
+	printf("main exit\n");
     system("pause");
     return 0;
 }

@@ -75,7 +75,7 @@ PVOID Hooker::GenShellCode() {
 		0x41, 0x5D,								//pop r13
 		0x41, 0x5E,								//pop r14
 		//0x41, 0x5F,							//pop r15
-		0x48, 0x83, 0xC4, 0x10,					//add rsp,8 代替pop r15,pop rsp
+		0x48, 0x83, 0xC4, 0x10,					//add rsp,10h 代替pop r15,pop rsp
 
 		//调用原来函数
 		0x41, 0xFF, 0xE7,						//jmp r15 只能用jmp 不能用call call会改变rsp
@@ -137,23 +137,19 @@ bool Hooker::Hook(PVOID function_address) {
 }
 
 void MainWork() {
-  bool success;
+  bool success = false;
 
   Hooker NtAllocateVirtualMemoryHooker;
-  success = NtAllocateVirtualMemoryHooker.Hook(&NtAllocateVirtualMemory);
-  if (!success) {
-    logger->info(L"hook NtAllocateVirtualMemory failed");
+  success = NtAllocateVirtualMemoryHooker.Hook(&::NtAllocateVirtualMemory);
+
+  Hooker BitBltHooker;
+  success &= BitBltHooker.Hook(&::BitBlt);
+
+  Hooker NtReadFileHooker;
+  success &= NtReadFileHooker.Hook(&::NtReadFile);
+
+    if (!success) {
+    logger->info(L"hook something failed");
     return;
   }
-
-
-
-
-
-
-
-
-
-
-
 }
