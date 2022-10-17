@@ -16,9 +16,6 @@ extern "C" void hook_handler_c(minictx * context) {
     assert(context);
     logger->info(L"hook_handler_c enter");		//DEBUG
 
-	if (context->HookedFunction == NtCreateFile) {
-      handler_NtCreateFile(context);
-    }
     if (context->HookedFunction == NtAllocateVirtualMemory) {
       handler_NtAllocateVirtualMemory(context);
 	}

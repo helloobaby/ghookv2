@@ -139,18 +139,21 @@ bool Hooker::Hook(PVOID function_address) {
 void MainWork() {
   bool success;
 
-  Hooker NtCreateFileHooker;
-  success = NtCreateFileHooker.Hook(&NtCreateFile);
-
-  if (!success) {
-    logger->info(L"hook NtCreateFile failed");
-    return;
-  }
-
   Hooker NtAllocateVirtualMemoryHooker;
   success = NtAllocateVirtualMemoryHooker.Hook(&NtAllocateVirtualMemory);
   if (!success) {
     logger->info(L"hook NtAllocateVirtualMemory failed");
     return;
   }
+
+
+
+
+
+
+
+
+
+
+
 }
