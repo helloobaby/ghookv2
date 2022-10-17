@@ -5,9 +5,6 @@ extern std::shared_ptr<spdlog::logger> logger;
 
 void handler_NtAllocateVirtualMemory(minictx* context) {
 
-  //DbgBreakPoint(); //ÖÐ¶Ïµ½windbg
-
-
   //size_t* r9 = get_4_param<size_t*>(context);
   //DWORD AllocType = get_5_param<DWORD>(context);
   //DWORD ProtectType = get_6_param<DWORD>(context);
@@ -25,8 +22,4 @@ void handler_BitBlt(minictx* context) {
     int cy = get_5_param<int>(context);
 
     logger->info("x:{} y:{} cx:{} cy:{}", x, y, cx, cy);
-}
-
-void handler_NtReadFile(minictx* context) {
-
 }
