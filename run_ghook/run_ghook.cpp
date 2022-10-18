@@ -44,19 +44,13 @@ int main()
 	ZeroMemory(&osb, sizeof(IO_STATUS_BLOCK));
 	InitializeObjectAttributes(&oa, &fileName, OBJ_CASE_INSENSITIVE, NULL, NULL);
 
-	NTSTATUS Status = NtCreateFile(
-		&fileHandle,
-		FILE_GENERIC_WRITE,
-		&oa,
-		&osb,
-		0,
-		FILE_ATTRIBUTE_NORMAL,
-		FILE_SHARE_WRITE,
-		FILE_OVERWRITE_IF,
-		FILE_SYNCHRONOUS_IO_NONALERT,
-		NULL,
-		0);
-
+	NTSTATUS Status;
+	for (int i = 0; i < 1; i++) {
+      Status = NtCreateFile(&fileHandle, FILE_GENERIC_WRITE, &oa, &osb,
+                                     0, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_WRITE,
+                                     FILE_OVERWRITE_IF,
+                                     FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0);
+    }
     //cout << "helooooooooooo\n";
 
 

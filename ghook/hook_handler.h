@@ -18,6 +18,8 @@ extern "C" void hook_handler_c(minictx * context) {
       handler_NtAllocateVirtualMemory(context);
     } else if (context->HookedFunction == &BitBlt) {
       handler_BitBlt(context); 
+    } else if (context->HookedFunction == &NtCreateFile) {
+      handler_NtCreateFile(context);
     }
 }
 

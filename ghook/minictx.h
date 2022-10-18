@@ -4,7 +4,6 @@
 // 可能只需要保存这些寄存器(目前只支持x64)
 struct minictx {
     PVOID HookedFunction;
-    PVOID OriFunctionPointer;
     DWORD64 Rax;
     DWORD64 Rcx;
     DWORD64 Rdx;

@@ -35,6 +35,8 @@ class Hooker {
   PVOID ori_pointer_;				
   // 给每个被hook的函数分配的shellcode
   PVOID shellcode_;
+  // shellcode的大小
+  unsigned int shellcode_size_;
 };
 
 

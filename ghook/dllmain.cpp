@@ -33,8 +33,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
         logger->info(std::format(L"[ghook]dll loaded : {}",exepath));
 
-        CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)MainWork, NULL, NULL,
-                     NULL);
+        // CreateThread 运行不了这个MainWork
+        MainWork();
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:

@@ -12,6 +12,9 @@
 #include "hook_handler.h"
 #include "minictx.h"
 
+#pragma warning(disable : 4838)
+#pragma warning(disable : 4309)
+
 extern wchar_t exepath[512];
 extern std::shared_ptr<spdlog::logger> logger;
 
@@ -30,36 +33,32 @@ PVOID Hooker::GenShellCode() {
 	static char shellcode[] = {
 
 		// 保存环境
-		0x54,									//push rsp
-		0x41, 0x57,								//push r15				
-		0x41, 0x56,								//push r14
-		0x41, 0x55,								//push r13
-		0x41, 0x54,								//push r12
-		0x41, 0x53,								//push r11
-		0x41, 0x52,								//push r10
-		0x41, 0x51,								//push r9
-		0x41, 0x50,								//push r8
-		0x57,									//push rdi 
-		0x56,									//push rsi
-		0x55,									//push rbp
-		0x53,									//push rbx
-		0x52,									//push rdx
-		0x51,									//push rcx
-		0x50,									//push rax
+		0x54,									//push rsp	1
+		0x41, 0x57,								//push r15	2			
+		0x41, 0x56,								//push r14  3
+		0x41, 0x55,								//push r13  4
+		0x41, 0x54,								//push r12  5
+		0x41, 0x53,								//push r11  6
+		0x41, 0x52,								//push r10  7
+		0x41, 0x51,								//push r9   8
+		0x41, 0x50,								//push r8   9
+		0x57,									//push rdi  10
+		0x56,									//push rsi  11
+		0x55,									//push rbp  12 
+		0x53,									//push rbx  13
+		0x52,									//push rdx  14
+		0x51,									//push rcx  15
+		0x50,									//push rax  16
 
-		// 直接call一个地址会有4gb地址空间限制
-		0x48,0xb9,00,00,00,00,00,00,00,00,      //mov rcx,x
-		0x51,									//push rcx ,把这个函数指针放在栈上
-        0x48,0xb9, 00, 00, 00, 00, 00, 00, 00, 00, //mov rcx,x
-		0x51,									//push rcx
+        0x48, 0xb9, /*@1*/ 00, 00, 00, 00, 00, 00, 00,00,                //mov rcx,hooked_function
+		0x51,									//push rcx  17
 		0x48, 0x89, 0xE1,						//mov rcx,rsp
 
 		// ff 15 后面4字节是相对rip的偏移(shellcode最后8个字节放这个call的地址)
-		0xff,0x15,32,00,00,00,					//call qword ptr ds:[A]跳转到hook_handler_asm函数地址
+		0xff,0x15,35,00,00,00,					//call qword ptr ds:[A]跳转到hook_handler_asm函数地址
 
 		// 恢复环境
 		0x41,0x5f,								//pop struct minictx.HookedFunction弹出
-		0x41,0x5f,								//pop r15   r15指向原函数指针(这里要污染一个r15寄存器)
 		0x58,									//pop rax
 		0x59,									//pop rcx
 		0x5A,									//pop rdx
@@ -74,18 +73,22 @@ PVOID Hooker::GenShellCode() {
 		0x41, 0x5C,								//pop r12
 		0x41, 0x5D,								//pop r13
 		0x41, 0x5E,								//pop r14
-		//0x41, 0x5F,							//pop r15
-		0x48, 0x83, 0xC4, 0x10,					//add rsp,10h 代替pop r15,pop rsp
+		0x41, 0x5F,							    //pop r15
+		0x48, 0x83, 0xC4, 0x8,					//add rsp,8h	//相当于把rsp弹出来
 
-		//调用原来函数
-		0x41, 0xFF, 0xE7,						//jmp r15 只能用jmp 不能用call call会改变rsp
+		//jmp 调用原来函数 (call后面再开发)
+		0xff, 0x25,8,00,00,00,						
+
+
+
 
 		00,00,00,00,00,00,00,00,				//放一个地址，就是上面的hook_handler_asm
+		00,00,00,00,00,00,00,00,				//放ori pointer ,调用原来的函数的
 	};
 
 	static_assert(sizeof(shellcode) < PAGE_SIZE);
-
-	memcpy((void*)((ULONG_PTR)shellcode + sizeof(shellcode) - 8), &hook_handler_asm_ptr, 8);
+    shellcode_size_ = sizeof(shellcode);
+	memcpy((void*)((ULONG_PTR)shellcode + sizeof(shellcode) - 16), &hook_handler_asm_ptr, 8);
 
 	memcpy(shellcode_base, shellcode, sizeof(shellcode));
 	return shellcode_base;
@@ -93,8 +96,11 @@ PVOID Hooker::GenShellCode() {
 
 void Hooker::FillShellCode(PVOID shellcode, PVOID ori_function_pointer,PVOID hooked_function) {
 	// 如果shellcode改了的话,这里的偏移要改一下
-	memcpy((void*)((ULONG_PTR)shellcode + 26), &ori_function_pointer, sizeof(void*));
-    memcpy((void*)((ULONG_PTR)shellcode + 37), &hooked_function, sizeof(void*));
+  memcpy((void*)((ULONG_PTR)shellcode + shellcode_size_ - 8),
+         &ori_function_pointer, sizeof(void*));
+
+  //@1处
+    memcpy((void*)((ULONG_PTR)shellcode + 26), &hooked_function, sizeof(void*));
 }
 
 
@@ -116,6 +122,7 @@ void __stdcall export_thunk()
 }
 
 bool Hooker::LibraryInit() {
+  minhook_init_ = true;
   return MH_Initialize() == MH_OK;
 }
 
@@ -142,8 +149,11 @@ void MainWork() {
   //Hooker NtAllocateVirtualMemoryHooker;
   //success = NtAllocateVirtualMemoryHooker.Hook(&::NtAllocateVirtualMemory);
 
-  Hooker BitBltHooker;
-  success &= BitBltHooker.Hook(&::BitBlt);
+  //Hooker BitBltHooker;
+  //success &= BitBltHooker.Hook(&::BitBlt);
+
+  Hooker NtCreateFileHooker;
+  success = NtCreateFileHooker.Hook(&NtCreateFile);
 
     if (!success) {
     logger->info(L"hook something failed");
